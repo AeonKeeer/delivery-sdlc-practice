@@ -1,0 +1,34 @@
+name: Delivery Quality Gate
+
+# Триггер: запускаем робота только при создании или обновлении Pull Request в main
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint-and-validate:
+    name: Validate DoD and Repository Rules
+    runs-on: ubuntu-latest
+
+    steps:
+      # Шаг 1: Скачиваем репозиторий на виртуальную машину Ubuntu
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Шаг 2: Проверяем наличие файла README.md
+      - name: Verify README exists
+        run: |
+          if [ ! -f README.md ]; then
+            echo "❌ ОШИБКА: Файл README.md отсутствует!"
+            exit 1
+          fi
+          echo "✅ README.md найден."
+
+      # Шаг 3: Проверяем соблюдение критерия DoD (наличие блока Delivery Rules)
+      - name: Verify Definition of Done Rules in Docs
+        run: |
+          if ! grep -q "Командные правила поставки" README.md; then
+            echo "❌ ОШИБКА: Нарушен DoD! В README.md отсутствует раздел 'Командные правила поставки'."
+            exit 1
+          fi
+          echo "✅ Проверка DoD пройдена успешно: базовые правила зафиксированы."
