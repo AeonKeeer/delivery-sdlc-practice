@@ -6,3 +6,4 @@
 3. Критерий готовности (DoD): тесты зеленые, документация обновлена.git < test SDLC-1 flow -->
 pr temolate verif
 secon com
+demo
